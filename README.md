@@ -1,19 +1,53 @@
 # Valorant Store
-Python script to display Valorant skin IDs in your store
 
+Valorant Store that shows your store without open the VALORANT by using
+the [In-game API](https://github.com/techchrism/valorant-api-docs). Written using Python and
+the [cfscrape](https://pypi.org/project/cfscrape/) library
+
+## Requirements
+
+[cfscrape (and Node.js dependency)](https://pypi.org/project/cfscrape/)
 
 ## Usage
-```python
-from valorant import Valorant
 
-vlr = Valorant("username", "password", "eu")
-print(vlr.store())
+```python
+from valorant import ValorantStore
+
+valorant_store = ValorantStore(username="username", password="password", region="eu", auth_path="./")
+
+
+valorant_store.wallet(False)
+#{'Balances': {'85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741': 150, 'e59aa87c-4cbf-517a-5983-6e81511be9b7': 200, 'f08d4ae3-939c-4576-ab26-09ce1f23bb37': 0}}
+
+valorant_store.wallet(True)
+#{'valorant_points': 156, 'radianite_points': 290, 'free_agents': 0}
+
+valorant_store.store(False)
+#{'FeaturedBundle': {'Bundle': {'ID': '75f8e0b0-fb81-4918-924a-b0a6cbf2ed73', 'DataAssetID': '83e78a53-435b-f891-9e04-a9b59ed8fa44', 'CurrencyID': '85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741', 'Items': [{'Item': {'ItemTypeID': 'e7c63390-eda7-46e0-bb7a-a6abdacd2433', 'ItemID': 'becdafdf-4d4b-0a8c-75d1-b8908db15ce5', 'Amount': 1}, 'BasePrice': 1275, 'CurrencyID': '85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741', 'DiscountPercent': 0, 'DiscountedPrice': 1275, 'IsPromoItem': False}, {'Item': {'ItemTypeID': 'e7c63390-eda7-46e0-bb7a-a6abdacd2433', 'ItemID': 'f0a2a250-4cab-264b-30b0-8ea0706589ff', 'Amount': 1}, 'BasePrice': 1275, 'CurrencyID': '85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741', 'DiscountPercent': 0, 'DiscountedPrice': 1275, 'IsPromoItem': False}, {'Item': {'ItemTypeID': 'e7c63390-eda7-46e0-bb7a-a6abdacd2433', 'ItemID': '1ef9fcc9-4087-a079-616a-849f43c51665', 'Amount': 1}, 'BasePrice': 1275, 'CurrencyID': '85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741', 'DiscountPercent': 0, 'DiscountedPrice': 1275, 'IsPromoItem': False}, {'Item': {'ItemTypeID': 'e7c63390-eda7-46e0-bb7a-a6abdacd2433', 'ItemID': '3d9792a3-4614-c8e0-6eda-58bb52e69d8b', 'Amount': 1}, 'BasePrice': 1275, 'CurrencyID': '85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741', 'DiscountPercent': 0, 'DiscountedPrice': 1275, 'IsPromoItem': False}, {'Item': {'ItemTypeID': 'e7c63390-eda7-46e0-bb7a-a6abdacd2433', 'ItemID': 'ed0080a9-4d77-d279-5a5c-f2bdb630307d', 'Amount': 1}, 'BasePrice': 2550, 'CurrencyID': '85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741', 'DiscountPercent': 1, 'DiscountedPrice': 0, 'IsPromoItem': False}], 'DurationRemainingInSeconds': 353036, 'WholesaleOnly': False}, 'Bundles': [{'ID': '75f8e0b0-fb81-4918-924a-b0a6cbf2ed73', 'DataAssetID': '83e78a53-435b-f891-9e04-a9b59ed8fa44', 'CurrencyID': '85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741', 'Items': [{'Item': {'ItemTypeID': 'e7c63390-eda7-46e0-bb7a-a6abdacd2433', 'ItemID': 'becdafdf-4d4b-0a8c-75d1-b8908db15ce5', 'Amount': 1}, 'BasePrice': 1275, 'CurrencyID': '85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741', 'DiscountPercent': 0, 'DiscountedPrice': 1275, 'IsPromoItem': False}, {'Item': {'ItemTypeID': 'e7c63390-eda7-46e0-bb7a-a6abdacd2433', 'ItemID': 'f0a2a250-4cab-264b-30b0-8ea0706589ff', 'Amount': 1}, 'BasePrice': 1275, 'CurrencyID': '85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741', 'DiscountPercent': 0, 'DiscountedPrice': 1275, 'IsPromoItem': False}, {'Item': {'ItemTypeID': 'e7c63390-eda7-46e0-bb7a-a6abdacd2433', 'ItemID': '1ef9fcc9-4087-a079-616a-849f43c51665', 'Amount': 1}, 'BasePrice': 1275, 'CurrencyID': '85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741', 'DiscountPercent': 0, 'DiscountedPrice': 1275, 'IsPromoItem': False}, {'Item': {'ItemTypeID': 'e7c63390-eda7-46e0-bb7a-a6abdacd2433', 'ItemID': '3d9792a3-4614-c8e0-6eda-58bb52e69d8b', 'Amount': 1}, 'BasePrice': 1275, 'CurrencyID': '85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741', 'DiscountPercent': 0, 'DiscountedPrice': 1275, 'IsPromoItem': False}, {'Item': {'ItemTypeID': 'e7c63390-eda7-46e0-bb7a-a6abdacd2433', 'ItemID': 'ed0080a9-4d77-d279-5a5c-f2bdb630307d', 'Amount': 1}, 'BasePrice': 2550, 'CurrencyID': '85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741', 'DiscountPercent': 1, 'DiscountedPrice': 0, 'IsPromoItem': False}], 'DurationRemainingInSeconds': 353036, 'WholesaleOnly': False}], 'BundleRemainingDurationInSeconds': 353036}, 'SkinsPanelLayout': {'SingleItemOffers': ['26eee656-4f8d-bdd3-e4fe-ae9e808a3408', '93266c2b-400f-da62-24a0-739f51d33cc1', '9336ab9d-445c-0872-a283-9f9b61a0098a', 'e2c84381-4fa6-29b4-37b9-21bba8ae24bf'], 'SingleItemOffersRemainingDurationInSeconds': 18236}, 'BonusStore': {'BonusStoreOffers': [{'BonusOfferID': '91d441fd-4fe6-4b3a-83f9-709c6f97c305', 'Offer': {'OfferID': '37851a69-4719-d8ae-d305-49bcee8d853c', 'IsDirectPurchase': True, 'StartDate': '2022-07-22T18:56:03.678730534Z', 'Cost': {'85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741': 1275}, 'Rewards': [{'ItemTypeID': 'e7c63390-eda7-46e0-bb7a-a6abdacd2433', 'ItemID': '37851a69-4719-d8ae-d305-49bcee8d853c', 'Quantity': 1}]}, 'DiscountPercent': 33, 'DiscountCosts': {'85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741': 855}, 'IsSeen': True}, {'BonusOfferID': '722534e3-67e7-4994-bf7f-76499f121a0a', 'Offer': {'OfferID': 'c4547e69-47a7-dc52-d09c-94bbf87dba0a', 'IsDirectPurchase': True, 'StartDate': '2022-07-22T18:56:03.678742076Z', 'Cost': {'85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741': 1775}, 'Rewards': [{'ItemTypeID': 'e7c63390-eda7-46e0-bb7a-a6abdacd2433', 'ItemID': 'c4547e69-47a7-dc52-d09c-94bbf87dba0a', 'Quantity': 1}]}, 'DiscountPercent': 31, 'DiscountCosts': {'85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741': 1225}, 'IsSeen': True}, {'BonusOfferID': '49bb6862-c8f5-4d35-baf6-33f6f72e8272', 'Offer': {'OfferID': 'd3a228df-4eb5-09c4-0e32-93b50c9ec842', 'IsDirectPurchase': True, 'StartDate': '2022-07-22T18:56:03.678759888Z', 'Cost': {'85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741': 2550}, 'Rewards': [{'ItemTypeID': 'e7c63390-eda7-46e0-bb7a-a6abdacd2433', 'ItemID': 'd3a228df-4eb5-09c4-0e32-93b50c9ec842', 'Quantity': 1}]}, 'DiscountPercent': 22, 'DiscountCosts': {'85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741': 1989}, 'IsSeen': True}, {'BonusOfferID': '034628d4-8527-49d7-8eac-e71c04a11030', 'Offer': {'OfferID': '481a5abb-45d7-818d-798f-d18d988b6dc1', 'IsDirectPurchase': True, 'StartDate': '2022-07-22T18:56:03.678728369Z', 'Cost': {'85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741': 1275}, 'Rewards': [{'ItemTypeID': 'e7c63390-eda7-46e0-bb7a-a6abdacd2433', 'ItemID': '481a5abb-45d7-818d-798f-d18d988b6dc1', 'Quantity': 1}]}, 'DiscountPercent': 19, 'DiscountCosts': {'85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741': 1033}, 'IsSeen': True}, {'BonusOfferID': '32c9b22f-9b15-4c9a-8e91-577525ca17ae', 'Offer': {'OfferID': '186d9fbb-400e-665b-e5f3-c08b24b6974f', 'IsDirectPurchase': True, 'StartDate': '2022-07-22T18:56:03.67873985Z', 'Cost': {'85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741': 1275}, 'Rewards': [{'ItemTypeID': 'e7c63390-eda7-46e0-bb7a-a6abdacd2433', 'ItemID': '186d9fbb-400e-665b-e5f3-c08b24b6974f', 'Quantity': 1}]}, 'DiscountPercent': 29, 'DiscountCosts': {'85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741': 906}, 'IsSeen': True}, {'BonusOfferID': '58071bcd-81c9-4e1c-a10e-b18d8689f3a4', 'Offer': {'OfferID': '50265ad5-4f14-2b32-924e-02bbed2bea6f', 'IsDirectPurchase': True, 'StartDate': '2022-07-22T18:56:03.678723494Z', 'Cost': {'85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741': 875}, 'Rewards': [{'ItemTypeID': 'e7c63390-eda7-46e0-bb7a-a6abdacd2433', 'ItemID': '50265ad5-4f14-2b32-924e-02bbed2bea6f', 'Quantity': 1}]}, 'DiscountPercent': 38, 'DiscountCosts': {'85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741': 543}, 'IsSeen': True}], 'BonusStoreRemainingDurationInSeconds': 882236}}
+
+valorant_store.store(True)
+#{'daily_offers': {'remaining_duration': 18236, 'data': [{'id': '26eee656-4f8d-bdd3-e4fe-ae9e808a3408', 'image': 'https://media.valorant-api.com/weaponskinlevels/26eee656-4f8d-bdd3-e4fe-ae9e808a3408/displayicon.png'}, {'id': '93266c2b-400f-da62-24a0-739f51d33cc1', 'image': 'https://media.valorant-api.com/weaponskinlevels/93266c2b-400f-da62-24a0-739f51d33cc1/displayicon.png'}, {'id': '9336ab9d-445c-0872-a283-9f9b61a0098a', 'image': 'https://media.valorant-api.com/weaponskinlevels/9336ab9d-445c-0872-a283-9f9b61a0098a/displayicon.png'}, {'id': 'e2c84381-4fa6-29b4-37b9-21bba8ae24bf', 'image': 'https://media.valorant-api.com/weaponskinlevels/e2c84381-4fa6-29b4-37b9-21bba8ae24bf/displayicon.png'}]}, 'night_market': {'remaining_duration': 882236, 'data': [{'id': '37851a69-4719-d8ae-d305-49bcee8d853c', 'image': 'https://media.valorant-api.com/weaponskinlevels/37851a69-4719-d8ae-d305-49bcee8d853c/displayicon.png', 'original_cost': 1275, 'discount_cost': 855, 'discount_percent': 33}, {'id': 'c4547e69-47a7-dc52-d09c-94bbf87dba0a', 'image': 'https://media.valorant-api.com/weaponskinlevels/c4547e69-47a7-dc52-d09c-94bbf87dba0a/displayicon.png', 'original_cost': 1775, 'discount_cost': 1225, 'discount_percent': 31}, {'id': 'd3a228df-4eb5-09c4-0e32-93b50c9ec842', 'image': 'https://media.valorant-api.com/weaponskinlevels/d3a228df-4eb5-09c4-0e32-93b50c9ec842/displayicon.png', 'original_cost': 2550, 'discount_cost': 1989, 'discount_percent': 22}, {'id': '481a5abb-45d7-818d-798f-d18d988b6dc1', 'image': 'https://media.valorant-api.com/weaponskinlevels/481a5abb-45d7-818d-798f-d18d988b6dc1/displayicon.png', 'original_cost': 1275, 'discount_cost': 1033, 'discount_percent': 19}, {'id': '186d9fbb-400e-665b-e5f3-c08b24b6974f', 'image': 'https://media.valorant-api.com/weaponskinlevels/186d9fbb-400e-665b-e5f3-c08b24b6974f/displayicon.png', 'original_cost': 1275, 'discount_cost': 906, 'discount_percent': 29}, {'id': '50265ad5-4f14-2b32-924e-02bbed2bea6f', 'image': 'https://media.valorant-api.com/weaponskinlevels/50265ad5-4f14-2b32-924e-02bbed2bea6f/displayicon.png', 'original_cost': 875, 'discount_cost': 543, 'discount_percent': 38}]}}
+
+valorant_store.skin_info("4e435234-49a2-1444-4640-908692c855b8")
+#{'uuid': '4e435234-49a2-1444-4640-908692c855b8', 'displayName': 'RGX 11z Pro Vandal', 'levelItem': None, 'displayIcon': 'https://media.valorant-api.com/weaponskinlevels/4e435234-49a2-1444-4640-908692c855b8/displayicon.png', 'streamedVideo': 'https://media.valorant-api.com/streamedvideos/VALskinpreview_Afterglow_Vandal_01.mp4', 'assetPath': 'ShooterGame/Content/Equippables/Guns/Rifles/AK/Afterglow/Levels/AK_Afterglow_Lv1_PrimaryAsset'}
 ```
 
+## Legal
 
-## Get More Information by ID
-https://valorant-api.com/v1/weapons/skinlevels/{uuid}
+Please read the [DISCLAIMER](DISCLAIMER.md) before using the code.
 
+```
+Valorant-Store is not endorsed by Riot Games and does not reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games and all associated properties are trademarks or registered trademarks of Riot Games, Inc.
+```
+
+## Riot Games
+
+Hey Riot, first of all i hope u know that this project is a try to enhance the developer community of VALORANT and also
+recognize it as one. If u still have an issue with it, feel free to email or something :)
+
+## Contributors
+Thanks to [@techchrism](https://github.com/techchrism/valorant-api-docs) and [Valorant-API.com](https://github.com/Valorant-API), without them many parts of the API would be not available.
 
 ## License
+
 The MIT License (MIT). Please see [License File](LISENCE) for more information.
