@@ -1,7 +1,7 @@
 import pickle
 import cfscrape
 from json import loads as json_decode
-from os import path, getcwd, sep
+from os import path, getcwd, sep, remove
 from time import time
 from valorantstore.ValorantStoreException import ValorantStoreException
 
@@ -21,11 +21,11 @@ class ValorantStore:
                 self.__auth = pickle.load(auth)
         else:
             self.__login()
-        self.__headers = {
+        self.headers = {
             "X-Riot-Entitlements-JWT": self.__auth["entitlements_token"],
             "Authorization": "Bearer " + self.__auth["access_token"],
         }
-        self.__scraper = cfscrape.create_scraper()
+        self.scraper = cfscrape.create_scraper()
 
     @staticmethod
     def __get_access_token(url: str) -> str:
@@ -124,7 +124,8 @@ class ValorantStore:
                 "https://auth.riotgames.com/authorize?redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&client_id"
                 "=play-valorant-web-prod&response_type=token%20id_token&nonce=1", allow_redirects=False)
             if login_response.status_code != 303 or login_response.headers.get("location").find("access_token") == -1:
-                raise ValorantStoreException("refresh", "request", login_response)
+                remove(self.__cookie_file)
+                self.__login()
             else:
                 self.__auth["access_token"] = self.__get_access_token(login_response.headers.get("location"))
         else:
@@ -151,9 +152,14 @@ class ValorantStore:
                     pickle.dump(scraper.cookies, cookies)
             try:
                 login = json_decode(login_response.text)
-                self.__auth["access_token"] = self.__get_access_token(login["response"]["parameters"]["uri"])
             except Exception:
                 raise ValorantStoreException("access", "request", login_response)
+            if "type" in login and login["type"] == "multifactor":
+                raise ValorantStoreException("access", "multifactor", login_response)
+            try:
+                self.__auth["access_token"] = self.__get_access_token(login["response"]["parameters"]["uri"])
+            except Exception:
+                raise ValorantStoreException("access", "token", login_response)
         headers = {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + self.__auth["access_token"]
@@ -174,8 +180,8 @@ class ValorantStore:
             pickle.dump(self.__auth, auth)
 
     def wallet(self, format_response: bool = True) -> dict:
-        response = self.__scraper.get(f"https://pd.{self.__region}.a.pvp.net/store/v1/wallet/{self.__auth['player']}",
-                                      headers=self.__headers)
+        response = self.scraper.get(f"https://pd.{self.__region}.a.pvp.net/store/v1/wallet/{self.__auth['player']}",
+                                      headers=self.headers)
         try:
             wallet = json_decode(response.text)
             if format_response:
@@ -190,9 +196,9 @@ class ValorantStore:
             raise ValorantStoreException("wallet", "request", response)
 
     def store(self, format_response: bool = True) -> dict:
-        response = self.__scraper.get(
+        response = self.scraper.get(
             f"https://pd.{self.__region}.a.pvp.net/store/v2/storefront/{self.__auth['player']}",
-            headers=self.__headers)
+            headers=self.headers)
         try:
             store = json_decode(response.text)
             if format_response:
