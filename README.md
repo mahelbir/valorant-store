@@ -1,6 +1,6 @@
 # Valorant Store
 
-Valorant Store that shows your store without open the VALORANT by using
+Valorant Store that shows your store without running VALORANT by using
 the [In-game API](https://github.com/techchrism/valorant-api-docs). Written using Python and
 the [cfscrape](https://pypi.org/project/cfscrape/) library
 
@@ -49,6 +49,9 @@ print(valorant_store.spray_info("677dc003-4dbf-66a8-9116-4f8d7a9fb8d5"))
 
 print(valorant_store.bundle_info("3941ad01-4e3b-46e0-ba3a-ab94f7c67f98"))
 # {'uuid': '3941ad01-4e3b-46e0-ba3a-ab94f7c67f98', 'displayName': 'Xenohunter', 'displayNameSubText': None, 'description': 'Xenohunter', 'extraDescription': None, 'promoDescription': None, 'useAdditionalContext': False, 'displayIcon': 'https://media.valorant-api.com/bundles/3941ad01-4e3b-46e0-ba3a-ab94f7c67f98/displayicon.png', 'displayIcon2': 'https://media.valorant-api.com/bundles/3941ad01-4e3b-46e0-ba3a-ab94f7c67f98/displayicon2.png', 'verticalPromoImage': 'https://media.valorant-api.com/bundles/3941ad01-4e3b-46e0-ba3a-ab94f7c67f98/verticalpromoimage.png', 'assetPath': 'ShooterGame/Content/UI/OutOfGame/MainMenu/Store/Bundles/StorefrontItem_Alien_ThemeBundle_DataAsset'}
+
+print(valorant_store.session())
+# {'subject': 'f3cc468f-86e2-4820-8a1d-7edb3876d0a6', 'cxnState': 'CONNECTED', 'clientID': '54fa6e68-0db3-47dd-83d3-9e329c67d91b', 'clientVersion': 'release-06.01-shipping-3-815441', 'loopState': 'MENUS', 'loopStateMetadata': '', 'version': 1, 'lastHeartbeatTime': '2023-01-30T21:10:00.888Z', 'expiredTime': '0001-01-01T00:00:00Z', 'heartbeatIntervalMillis': 60000, 'playtimeNotification': '', 'playtimeMinutes': 0, 'isRestricted': False, 'userinfoValidTime': '0001-01-01T00:00:00Z', 'restrictionType': '', 'clientPlatformInfo': {'platformType': 'PC', 'platformOS': 'Windows', 'platformOSVersion': '10.0.22621.1.768.64bit', 'platformChipset': 'Unknown'}}
 ```
 
 ## Legal

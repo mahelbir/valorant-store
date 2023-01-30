@@ -181,7 +181,7 @@ class ValorantStore:
 
     def wallet(self, format_response: bool = True) -> dict:
         response = self.scraper.get(f"https://pd.{self.__region}.a.pvp.net/store/v1/wallet/{self.__auth['player']}",
-                                      headers=self.headers)
+                                    headers=self.headers)
         try:
             wallet = json_decode(response.text)
             if format_response:
@@ -268,3 +268,12 @@ class ValorantStore:
                 return store
         except Exception:
             raise ValorantStoreException("store", "request", response)
+
+    def session(self) -> dict:
+        response = self.scraper.get(
+            f"https://glz-{self.__region}-1.{self.__region}.a.pvp.net/session/v1/sessions/{self.__auth['player']}",
+            headers=self.headers)
+        try:
+            return json_decode(response.text)
+        except Exception:
+            raise ValorantStoreException("session", "request", response)
