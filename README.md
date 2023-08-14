@@ -1,8 +1,6 @@
 # Valorant Store
 
-Valorant Store that shows your store without running VALORANT by using
-the [In-game API](https://github.com/techchrism/valorant-api-docs). Written using Python and
-the [cfscrape](https://pypi.org/project/cfscrape/) library
+Valorant Store that shows your store without running VALORANT by using unofficial In-game API
 
 ## Requirements
 
@@ -21,7 +19,10 @@ pip install valorantstore
 ```python
 from valorantstore import ValorantStore
 
-valorant_store = ValorantStore(username="username", password="password", region="eu", auth_path="")
+# region: eu/na/ap/kr/br/latam/pbe
+# sess_path: you can specify where to save session files, default is current directory
+# proxy: you can use a proxy to change your ip address when logging in (optional)
+valorant_store = ValorantStore(username="username", password="password", region="eu", sess_path=None, proxy=None)
 
 print(valorant_store.wallet(False))
 # {'Balances': {'85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741': 1156, 'e59aa87c-4cbf-517a-5983-6e81511be9b7': 145, 'f08d4ae3-939c-4576-ab26-09ce1f23bb37': 0}}
@@ -64,13 +65,14 @@ Valorant-Store is not endorsed by Riot Games and does not reflect the views or o
 
 ## Riot Games
 
-Hey Riot, first of all i hope u know that this project is a try to enhance the developer community of VALORANT and also
+Hey Riot, first of all I hope you know that this project is a try to enhance the developer community of VALORANT and
+also
 recognize it as one. If u still have an issue with it, feel free to email or something :)
 
 ## Contributors
 
-Thanks to [@techchrism](https://github.com/techchrism/valorant-api-docs)
-and [Valorant-API.com](https://github.com/Valorant-API), without them many parts of the API would be not available.
+Thanks to [@techchrism](https://valapidocs.techchrism.me)
+and [@Valorant-API](https://valorant-api.com), without them many parts of the API would be not available.
 
 ## License
 

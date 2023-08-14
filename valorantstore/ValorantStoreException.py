@@ -1,6 +1,6 @@
 class ValorantStoreException(Exception):
     def __init__(self, exception_type: str, exception_message: str, response=None) -> None:
-        if response is not None:
+        if response:
             print(response.status_code)
             print(response.headers)
             print(response.text)

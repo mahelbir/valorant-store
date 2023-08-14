@@ -1,31 +1,40 @@
 import pickle
-import cfscrape
-from json import loads as json_decode
-from os import path, getcwd, sep, remove
+from os import path, getcwd, remove, mkdir
 from time import time
+
+import cfscrape
+import requests
+
 from valorantstore.ValorantStoreException import ValorantStoreException
 
 
 class ValorantStore:
     __auth = {}
 
-    def __init__(self, username: str, password: str, region: str = "eu", auth_path: str = ""):
-        self.__username = username.lower()
+    def __init__(self, username: str, password: str, region: str = "eu", sess_path: str = None, proxy=None):
+        self.__username = username.lower().strip()
         self.__password = password
         self.__region = region
-        self.__auth_path = auth_path.rstrip('/').rstrip('\\') if auth_path else getcwd()
-        self.__auth_file = f"{self.__auth_path + sep}riot_auth_{self.__username}.pickle"
-        self.__cookie_file = f"{self.__auth_path + sep}riot_cookie_{self.__username}.pickle"
+        self.__proxy = proxy
+        self.__sess_path = sess_path if sess_path else getcwd()
+        if not path.exists(self.__sess_path):
+            mkdir(self.__sess_path)
+        self.__auth_file = path.join(self.__sess_path, f"riot_auth_{self.__username}.pickle")
+        self.__cookie_file = path.join(self.__sess_path, f"riot_cookie_{self.__username}.pickle")
         if path.isfile(self.__auth_file) and time() - path.getmtime(self.__auth_file) < 3600:
-            with open(self.__auth_file, "rb") as auth:
-                self.__auth = pickle.load(auth)
+            try:
+                with open(self.__auth_file, "rb") as auth:
+                    self.__auth = pickle.load(auth)
+            except Exception:
+                remove(self.__auth_file)
+                self.__login()
         else:
             self.__login()
         self.headers = {
             "X-Riot-Entitlements-JWT": self.__auth["entitlements_token"],
             "Authorization": "Bearer " + self.__auth["access_token"],
         }
-        self.scraper = cfscrape.create_scraper()
+        self.request = requests.session()
 
     @staticmethod
     def __get_access_token(url: str) -> str:
@@ -53,41 +62,41 @@ class ValorantStore:
 
     @staticmethod
     def skin_info(skin: str) -> dict:
-        response = cfscrape.create_scraper().get(f"https://valorant-api.com/v1/weapons/skinlevels/{skin}")
+        response = requests.get(f"https://valorant-api.com/v1/weapons/skinlevels/{skin}")
         try:
-            return json_decode(response.text)["data"]
+            return response.json()["data"]
         except Exception:
             raise ValorantStoreException("skin_info", "request", response)
 
     @staticmethod
     def buddy_info(buddy: str) -> dict:
-        response = cfscrape.create_scraper().get(f"https://valorant-api.com/v1/buddies/levels/{buddy}")
+        response = requests.get(f"https://valorant-api.com/v1/buddies/levels/{buddy}")
         try:
-            return json_decode(response.text)["data"]
+            return response.json()["data"]
         except Exception:
             raise ValorantStoreException("buddy_info", "request", response)
 
     @staticmethod
     def card_info(card: str) -> dict:
-        response = cfscrape.create_scraper().get(f"https://valorant-api.com/v1/playercards/{card}")
+        response = requests.get(f"https://valorant-api.com/v1/playercards/{card}")
         try:
-            return json_decode(response.text)["data"]
+            return response.json()["data"]
         except Exception:
             raise ValorantStoreException("card_info", "request", response)
 
     @staticmethod
     def spray_info(spray: str) -> dict:
-        response = cfscrape.create_scraper().get(f"https://valorant-api.com/v1/sprays/{spray}")
+        response = requests.get(f"https://valorant-api.com/v1/sprays/{spray}")
         try:
-            return json_decode(response.text)["data"]
+            return response.json()["data"]
         except Exception:
             raise ValorantStoreException("spray_info", "request", response)
 
     @staticmethod
     def bundle_info(bundle: str) -> dict:
-        response = cfscrape.create_scraper().get(f"https://valorant-api.com/v1/bundles/{bundle}")
+        response = requests.get(f"https://valorant-api.com/v1/bundles/{bundle}")
         try:
-            return json_decode(response.text)["data"]
+            return response.json()["data"]
         except Exception:
             raise ValorantStoreException("skin info", "request", response)
 
@@ -104,8 +113,12 @@ class ValorantStore:
         return self.__auth
 
     @property
-    def auth_path(self) -> str:
-        return self.__auth_path
+    def sess_path(self) -> str:
+        return self.__sess_path
+
+    @property
+    def proxy(self) -> str:
+        return self.__proxy
 
     @property
     def auth_file(self) -> str:
@@ -117,25 +130,38 @@ class ValorantStore:
 
     def __login(self):
         scraper = cfscrape.create_scraper()
+        if self.__proxy:
+            scraper.proxies = {
+                'http': self.__proxy,
+                'https': self.__proxy,
+            }
         if path.isfile(self.__cookie_file):
-            with open(self.__cookie_file, "rb") as cookies:
-                scraper.cookies = pickle.load(cookies)
-            login_response = scraper.get(
-                "https://auth.riotgames.com/authorize?redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&client_id"
-                "=play-valorant-web-prod&response_type=token%20id_token&nonce=1", allow_redirects=False)
-            if login_response.status_code != 303 or login_response.headers.get("location").find("access_token") == -1:
+            try:
+                with open(self.__cookie_file, "rb") as cookies:
+                    scraper.cookies = pickle.load(cookies)
+                login_response = scraper.get(
+                    "https://auth.riotgames.com/authorize?redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&client_id"
+                    "=play-valorant-web-prod&response_type=token%20id_token&nonce=1", allow_redirects=False, timeout=15)
+                if login_response.status_code != 303 or login_response.headers.get("location").find(
+                        "access_token") == -1:
+                    remove(self.__cookie_file)
+                    return self.__login()
+                else:
+                    self.__auth["access_token"] = self.__get_access_token(login_response.headers.get("location"))
+            except Exception:
                 remove(self.__cookie_file)
-                self.__login()
-            else:
-                self.__auth["access_token"] = self.__get_access_token(login_response.headers.get("location"))
+                return self.__login()
         else:
             cookie_response = scraper.post("https://auth.riotgames.com/api/v1/authorization", json={
                 "client_id": "play-valorant-web-prod",
                 "nonce": "1",
                 "redirect_uri": "https://playvalorant.com/opt_in",
                 "response_type": "token id_token"
-            })
-            cookie = json_decode(cookie_response.text)
+            }, timeout=15)
+            try:
+                cookie = cookie_response.json()
+            except Exception:
+                raise ValorantStoreException("cookie", "request", cookie_response)
             if "type" not in cookie:
                 raise ValorantStoreException("cookie", "request", cookie_response)
             elif cookie["type"] != "auth":
@@ -147,11 +173,11 @@ class ValorantStore:
                     "password": self.__password,
                     "remember": True,
                     "language": "en_US"
-                })
+                }, timeout=15)
                 with open(self.__cookie_file, "wb") as cookies:
                     pickle.dump(scraper.cookies, cookies)
             try:
-                login = json_decode(login_response.text)
+                login = login_response.json()
             except Exception:
                 raise ValorantStoreException("access", "request", login_response)
             if "type" in login and login["type"] == "multifactor":
@@ -164,15 +190,16 @@ class ValorantStore:
             "Content-Type": "application/json",
             "Authorization": "Bearer " + self.__auth["access_token"]
         }
-        entitlements_response = scraper.post("https://entitlements.auth.riotgames.com/api/token/v1", headers=headers)
+        entitlements_response = scraper.post("https://entitlements.auth.riotgames.com/api/token/v1", headers=headers,
+                                             timeout=15)
         try:
-            entitlements = json_decode(entitlements_response.text)
+            entitlements = entitlements_response.json()
             self.__auth["entitlements_token"] = entitlements["entitlements_token"]
         except Exception:
             raise ValorantStoreException("entitlements", "request", entitlements_response)
-        player_response = scraper.get("https://auth.riotgames.com/userinfo", headers=headers)
+        player_response = scraper.get("https://auth.riotgames.com/userinfo", headers=headers, timeout=15)
         try:
-            player = json_decode(player_response.text)
+            player = player_response.json()
             self.__auth["player"] = player["sub"]
         except Exception:
             raise ValorantStoreException("player", "request", player_response)
@@ -180,10 +207,10 @@ class ValorantStore:
             pickle.dump(self.__auth, auth)
 
     def wallet(self, format_response: bool = True) -> dict:
-        response = self.scraper.get(f"https://pd.{self.__region}.a.pvp.net/store/v1/wallet/{self.__auth['player']}",
+        response = self.request.get(f"https://pd.{self.__region}.a.pvp.net/store/v1/wallet/{self.__auth['player']}",
                                     headers=self.headers)
         try:
-            wallet = json_decode(response.text)
+            wallet = response.json()
             if format_response:
                 return {
                     "valorant_points": wallet["Balances"]["85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741"],
@@ -196,11 +223,11 @@ class ValorantStore:
             raise ValorantStoreException("wallet", "request", response)
 
     def store(self, format_response: bool = True) -> dict:
-        response = self.scraper.get(
+        response = self.request.get(
             f"https://pd.{self.__region}.a.pvp.net/store/v2/storefront/{self.__auth['player']}",
             headers=self.headers)
         try:
-            store = json_decode(response.text)
+            store = response.json()
             if format_response:
                 offers = []
                 for offer in store["SkinsPanelLayout"]["SingleItemOffers"]:
@@ -270,10 +297,10 @@ class ValorantStore:
             raise ValorantStoreException("store", "request", response)
 
     def session(self) -> dict:
-        response = self.scraper.get(
+        response = self.request.get(
             f"https://glz-{self.__region}-1.{self.__region}.a.pvp.net/session/v1/sessions/{self.__auth['player']}",
             headers=self.headers)
         try:
-            return json_decode(response.text)
+            return response.json()
         except Exception:
             raise ValorantStoreException("session", "request", response)

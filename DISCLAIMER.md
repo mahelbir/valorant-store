@@ -28,7 +28,7 @@ unapproved".
 
 We do not own any content within **Valorant-Store**, all available content i.e. information, links, images are
 provided "as is" directly from the unoffical API
-by [techchrism/valorant-api-docs](https://github.com/techchrism/valorant-api-docs)
+by [techchrism/valorant-api-docs](https://valapidocs.techchrism.me)
 or [Valorant-API.com](https://valorant-api.com/). For all content on **Valorant-Store**, we don't review, verify or
 authenticate it, and it may include inaccuracies or false information. We make no representations, warranties, or
 guarantees relating to the quality, suitability, truth, accuracy or completeness of any content contained in the

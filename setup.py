@@ -6,7 +6,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 pkg_name = "valorantstore"
 setuptools.setup(
     name=pkg_name,
-    version="3.0.0.0",
+    version="4.0.0.0",
     author="Mahmuthan Elbir",
     author_email="me@mahmuthanelbir.com.tr",
     description="Python module to display your Valorant store",
@@ -25,5 +25,5 @@ setuptools.setup(
     install_requires=[
         "cfscrape~=2.1.1"
     ],
-    python_requires=">=3.6"
+    python_requires=">=3.7"
 )
