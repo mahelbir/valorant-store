@@ -40,6 +40,8 @@ class ValorantStore:
         else:
             self.__login()
         self.headers = {
+            "X-Riot-ClientPlatform": self.client_platform_base64,
+            "X-Riot-ClientVersion": requests.get("https://valorant-api.com/v1/version").json()['data']['riotClientVersion'],
             "X-Riot-Entitlements-JWT": self.__auth["entitlements_token"],
             "Authorization": "Bearer " + self.__auth["access_token"],
         }
