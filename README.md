@@ -76,4 +76,4 @@ and [@Valorant-API](https://valorant-api.com), without them many parts of the AP
 
 ## License
 
-The MIT License (MIT). Please see [License File](LISENCE) for more information.
+The MIT License (MIT). Please see [License File](LICENSE) for more information.

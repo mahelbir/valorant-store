@@ -13,7 +13,7 @@ from valorantstore.ValorantStoreException import ValorantStoreException
 class ValorantStore:
     __auth = {}
 
-    def __init__(self, username: str, password: str, region: str = "ap", sess_path: str = None, proxy=None):
+    def __init__(self, username: str, password: str, region: str = "eu", sess_path: str = None, proxy=None):
         self.__username = username.lower().strip()
         self.__password = password
         self.__region = region
