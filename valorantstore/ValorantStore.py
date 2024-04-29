@@ -1,3 +1,5 @@
+import base64
+import json
 import pickle
 from os import path, getcwd, remove, mkdir
 from time import time
@@ -11,7 +13,7 @@ from valorantstore.ValorantStoreException import ValorantStoreException
 class ValorantStore:
     __auth = {}
 
-    def __init__(self, username: str, password: str, region: str = "eu", sess_path: str = None, proxy=None):
+    def __init__(self, username: str, password: str, region: str = "ap", sess_path: str = None, proxy=None):
         self.__username = username.lower().strip()
         self.__password = password
         self.__region = region
@@ -21,6 +23,13 @@ class ValorantStore:
             mkdir(self.__sess_path)
         self.__auth_file = path.join(self.__sess_path, f"riot_auth_{self.__username}.pickle")
         self.__cookie_file = path.join(self.__sess_path, f"riot_cookie_{self.__username}.pickle")
+        self.client_platform = {
+            "platformType": "PC",
+            "platformOS": "Windows",
+            "platformOSVersion": "10.0.19042.1.256.64bit",
+            "platformChipset": "Unknown"
+        }
+        self.client_platform_base64 = base64.b64encode(json.dumps(self.client_platform, indent=4, separators=(',', ': ')).replace('    ', '\t').replace('\n', '\r\n').encode('utf-8')).decode('utf-8')
         if path.isfile(self.__auth_file) and time() - path.getmtime(self.__auth_file) < 3600:
             try:
                 with open(self.__auth_file, "rb") as auth:
