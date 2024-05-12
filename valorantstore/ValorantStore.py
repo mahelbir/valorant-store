@@ -4,11 +4,24 @@ import pickle
 from os import path, getcwd, remove, mkdir
 from time import time
 
+import ssl
+from requests.adapters import HTTPAdapter
+from urllib3.poolmanager import PoolManager
 import cfscrape
 import requests
 
 from valorantstore.ValorantStoreException import ValorantStoreException
 
+class TLSv1_2Adapter(HTTPAdapter):
+    def init_poolmanager(self, connections, maxsize, block=False, **pool_kwargs):
+        context = ssl.SSLContext(ssl.PROTOCOL_TLS)
+        context.options |= ssl.OP_NO_TLSv1 | ssl.OP_NO_TLSv1_1 | ssl.OP_NO_TLSv1_3 | ssl.OP_NO_SSLv2 | ssl.OP_NO_SSLv3
+        #Only allow TLSv1.2(只允許TLSv1.2)
+        self.poolmanager = PoolManager(num_pools=connections,
+                                       maxsize=maxsize,
+                                       block=block,
+                                       ssl_context=context,
+                                       **pool_kwargs)
 
 class ValorantStore:
     __auth = {}
@@ -141,6 +154,7 @@ class ValorantStore:
 
     def __login(self):
         scraper = cfscrape.create_scraper()
+        scraper.mount('https://', TLSv1_2Adapter())
         if self.__proxy:
             scraper.proxies = {
                 'http': self.__proxy,
@@ -167,7 +181,8 @@ class ValorantStore:
                 "client_id": "play-valorant-web-prod",
                 "nonce": "1",
                 "redirect_uri": "https://playvalorant.com/opt_in",
-                "response_type": "token id_token"
+                "response_type": "token id_token",
+                "scope": "account openid"
             }, timeout=15)
             try:
                 cookie = cookie_response.json()
