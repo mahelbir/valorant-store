@@ -17,11 +17,7 @@ class TLSv1_2Adapter(HTTPAdapter):
         context = ssl.SSLContext(ssl.PROTOCOL_TLS)
         context.options |= ssl.OP_NO_TLSv1 | ssl.OP_NO_TLSv1_1 | ssl.OP_NO_TLSv1_3 | ssl.OP_NO_SSLv2 | ssl.OP_NO_SSLv3
         #Only allow TLSv1.2(只允許TLSv1.2)
-        self.poolmanager = PoolManager(num_pools=connections,
-                                       maxsize=maxsize,
-                                       block=block,
-                                       ssl_context=context,
-                                       **pool_kwargs)
+        self.poolmanager = PoolManager(num_pools=connections, maxsize=maxsize, block=block, ssl_context=context, **pool_kwargs)
 
 class ValorantStore:
     __auth = {}
