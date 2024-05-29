@@ -6,7 +6,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 pkg_name = "valorantstore"
 setuptools.setup(
     name=pkg_name,
-    version="5.0.0.0",
+    version="6.0.0.0",
     author="Mahmuthan Elbir",
     author_email="me@mahmuthanelbir.com.tr",
     description="Python module to display your Valorant store",
