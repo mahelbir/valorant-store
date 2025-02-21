@@ -1,3 +1,9 @@
+# ⚠️ WARNING: THIS PROJECT IS DEPRECATED ⚠️
+
+## ❌ Due to Riot Games' security policy, this repository is no longer maintained or supported.
+
+
+
 # Valorant Store
 
 Valorant Store that shows your store without running VALORANT by using unofficial In-game API
